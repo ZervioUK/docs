@@ -1,4 +1,4 @@
-# How to Schedule an Activity for a Job
+# How to Schedule a Job
 
 When a job is created, you will need to add activities to the job in order for it to be completed. In this guide, you'll learn how to add an activity to a job and assign crew members to the job.
 
@@ -13,6 +13,10 @@ At the end of this guide, you'll have access to this job page for your property.
 - A Workflow for the specific job
 
 If you do not have these configured or created yet, see the guides on [how to add a property](/Guides/adding-a-property.md), [how to add an opportunity](/Guides/adding-an-opportunity.md), and [how to configure a workflow](/Guides/creating-a-workflow.md).
+
+Here's a gif of the entire process
+
+![adding job gif](images/adding-new-job.gif)
 
 ## Creating a Job
 

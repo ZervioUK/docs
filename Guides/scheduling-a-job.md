@@ -1,6 +1,6 @@
 # How to Schedule a Job
 
-When a job is created, you will need to add activities to the job in order for it to be completed. In this guide, you'll learn how to add an activity to a job and assign crew members to the job.
+When a opportunity is created you will need to add a job for the specific job types selected in the opportunity. In this guide, you'll learn how to add a job to an opportunity.
 
 At the end of this guide, you'll have access to this job page for your property.
 

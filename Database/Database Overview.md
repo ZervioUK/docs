@@ -30,7 +30,7 @@ The tables within this database contain company-specific details, such as organi
 
 This table stores the core information about each company using Zervio ECO, identified by their `external_id` and other important attributes such as the name and SaaS_Operator_ID.
 
-When referenced in other table or databses the `externtal_id` is used a foreign key often named `tentant_id`
+When referenced in other tables or databases the `externtal_id` is used a foreign key often named `tentant_id`
 
 | **Field Name**                | **Explanation**                                                        |
 | ----------------------------- | ---------------------------------------------------------------------- |

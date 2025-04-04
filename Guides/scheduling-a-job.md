@@ -43,4 +43,6 @@ When clicked, you should see a page like this, and you have successfully created
 
 ![job page](images/job-page.png)
 
+# Conclusion
+
 Now that you've created the job, you'll need to add activities to it. See the guide on [how to add an activity to a job](/Guides/adding-an-activity-to-a-job.md).

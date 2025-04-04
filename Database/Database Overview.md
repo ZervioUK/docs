@@ -1,6 +1,6 @@
 # Database Overview
 
-The database is structured into 2 versions \- **Production** and **Development**
+The backend database is structured into 2 versions \- **Production** and **Development**
 
 **1\. Production \= Zervio Live**  
 Zervio Live has [production-grade data](https://www.precisely.com/blog/data-quality/5-characteristics-of-data-quality), which is Accurate, Complete, Reliable, Relevant and Timely
@@ -26,13 +26,169 @@ The `organization` database holds vital information related to the companies tha
 
 The tables within this database contain company-specific details, such as organizational structure, configuration, and related data. Here are breakdowns of some of the tables:
 
-### Organization Table
+**1. Organization Table**
 
 This table stores the core information about each company using Zervio ECO, identified by their `external_id` and other important attributes such as the name and SaaS_Operator_ID.
 
-When refrenced in other table or databses the `externtal_id` is used a foreign key often named `tentant_id`
+When referenced in other table or databses the `externtal_id` is used a foreign key often named `tentant_id`
 
-### Evidence Config
+| **Field Name**                | **Explanation**                                                        |
+| ----------------------------- | ---------------------------------------------------------------------- |
+| `external_id`                 | Unique identifier for the company.                                     |
+| `created_on`                  | Timestamp when the record was created.                                 |
+| `created_by`                  | Identifier for the user who created the record.                        |
+| `modified_on`                 | Timestamp of the last modification.                                    |
+| `modified_by`                 | Identifier for the user who last modified the record.                  |
+| `is_deleted`                  | Boolean flag indicating if the company is marked as deleted.           |
+| `name`                        | Name of the company.                                                   |
+| `saas_operator_id`            | Identifier for the SaaS operator.                                      |
+| `category_id`                 | Identifier for the company's category.                                 |
+| `code`                        | A unique code assigned to the company.                                 |
+| `unique_tax_reference`        | Unique reference for tax purposes.                                     |
+| `company_registration_number` | Registration number of the company.                                    |
+| `invoice_organization_id`     | Identifier for the invoicing organization.                             |
+| `payment_organization_id`     | Identifier for the payment organization.                               |
+| `allow_networking`            | Boolean flag indicating whether networking is allowed for the company. |
+| `image_id`                    | Identifier for the company logo or image.                              |
+
+**2. Property Table**
+
+The property tables contains all the properties related to a specific organization these are entered when a user adds a lead or oppurtunity. Below is a sql statement to retrieve all properties for a specific company:
+
+```sql
+SELECT p.formatted_address, o.name
+FROM proptech.property p, organization.organization o
+WHERE o.name = "CRG Direct";
+```
+
+| **Field Name**            | **Explanation**                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| `external_id`             | Identifier linking the property to an external source.                          |
+| `created_on`              | Timestamp when the property record was created.                                 |
+| `created_by`              | Identifier for the user who created the property record.                        |
+| `modified_on`             | Timestamp of the last modification of the property record.                      |
+| `modified_by`             | Identifier for the user who last modified the property record.                  |
+| `tenant_id`               | Foreign key linking to the tenant (organization) this property belongs to.      |
+| `saas_operator_id`        | Identifier for the SaaS operator managing the property.                         |
+| `formatted_address`       | The full address of the property in a formatted string.                         |
+| `lat`                     | Latitude of the property's location.                                            |
+| `lon`                     | Longitude of the property's location.                                           |
+| `city`                    | City where the property is located.                                             |
+| `state`                   | State or province where the property is located.                                |
+| `country_code`            | ISO country code of the property’s location.                                    |
+| `postcode`                | Postal code of the property’s location.                                         |
+| `tenure`                  | Type of tenure for the property (e.g., lease, ownership).                       |
+| `lad20cd`                 | Local authority district code (geographic).                                     |
+| `line1`                   | First line of the property address.                                             |
+| `line2`                   | Second line of the property address.                                            |
+| `line3`                   | Third line of the property address (if applicable).                             |
+| `what3words`              | What3Words location reference for the property.                                 |
+| `google_place_id`         | Google Places API identifier for the property.                                  |
+| `class_type`              | Classification type of the property (e.g., residential, commercial).            |
+| `name`                    | Name or description of the property.                                            |
+| `parent_id`               | ID of the parent property (if the property is part of a larger complex).        |
+| `is_uploaded_consumption` | Boolean flag indicating if consumption data has been uploaded for the property. |
+
+## PropTech \- Database Overview
+
+Primarily used for storing any data related to Zervio ECO. Below are explanations about some of the tables
+
+### Activities
+
+Activities are added to differnent types of jobs needed to complete a job, four main tables are used to add an activity
+
+**1. Activity Type Table**
+
+Activities are different types of work that can / should done during a project lifecycle these are stored in the activity_type table, below is an example of inserting a new activity type
+
+```sql
+INSERT INTO proptech.activity_type
+( external_id, tenant_id, saas_operator_id, is_default, name, description, tag, allow_job, allow_opportunity)
+VALUES( uuid(), 'e7cbb9db-b086-11ee-ba36-42010a400002', 'e7cbb9db-b086-11ee-ba36-42010a400002', 1, 'ASHP Site Survey', 'ASHP Site Survey', 'ASHP_SITE_SURVEY', 1, 1);
+```
+
+| **Field Name**           | **Explanation**                                                     |
+| ------------------------ | ------------------------------------------------------------------- |
+| `id`                     | Unique identifier for the activity type.                            |
+| `created_on`             | Timestamp when the activity type record was created.                |
+| `created_by`             | Identifier for the user who created the activity type record.       |
+| `modified_on`            | Timestamp of the last modification of the activity type record.     |
+| `modified_by`            | Identifier for the user who last modified the activity type record. |
+| `external_id`            | Unique identifier for the activity type linked externally.          |
+| `name`                   | Name of the activity type.                                          |
+| `description`            | Detailed description of the activity type.                          |
+| `deadline`               | Deadline for completing the activity type.                          |
+| `start_time`             | Start time for the activity type.                                   |
+| `expected_duration`      | Expected duration for the activity type.                            |
+| `event_location`         | Location where the activity is taking place.                        |
+| `status`                 | Current status of the activity type (e.g., active, completed).      |
+| `actual_start_time`      | Actual start time for the activity.                                 |
+| `actual_duration`        | Actual duration for the activity type.                              |
+| `parent_id`              | Identifier for the parent activity type (if applicable).            |
+| `engagement_id`          | ID of the engagement associated with the activity.                  |
+| `cancellation_reason_id` | ID for the reason of cancellation (if applicable).                  |
+| `cancellation_note`      | Note explaining why the activity was canceled.                      |
+| `virtual_link`           | Link for a virtual event (if the activity is virtual).              |
+| `virtual_passcode`       | Passcode required for a virtual event (if applicable).              |
+| `creator_note`           | Note created by the user when setting up the activity.              |
+| `expected_date`          | Expected date for the activity to occur.                            |
+| `activity_type_id`       | ID linking to the type of activity.                                 |
+
+Each activity type added also needs to be added to the **activity_config** table, the id from activity_type is used to link them using **activity_type_id**
+
+**2. Activity Config Table**
+
+The `activity_type_config` table configures an activity type, allowing services to be added to it. Services are different services or jobs that are done during an activity. Below is an example of inserting a new activity type configuration:
+
+```sql
+INSERT INTO proptech.activity_type_config
+(external_id, activity_type_id, job_type_id, project_id)
+VALUES(uuid(), 9, 17, NULL);
+```
+
+| **Field Name**     | **Explanation**                                                          |
+| ------------------ | ------------------------------------------------------------------------ |
+| `id`               | Unique identifier for the activity type configuration.                   |
+| `external_id`      | Unique identifier for the activity type configuration linked externally. |
+| `activity_type_id` | ID of the activity type being configured.                                |
+| `job_type_id`      | ID of the job type associated with the activity type.                    |
+| `project_id`       | ID of the project associated with the activity type (if applicable).     |
+
+A service is also needed , this allows installers, and other crew to be assigned to an activity
+
+**3. Service Table**
+
+Services are different actions that are taken to complete an activity, e.g., electrical work on a solar install, or the installation of equipment like a heat pump or solar panels. These are saved in the `organization.service` table.
+
+| **Field Name**     | **Explanation**                                                          |
+| ------------------ | ------------------------------------------------------------------------ |
+| `id`               | Unique identifier for the service.                                       |
+| `external_id`      | Unique identifier for the service linked externally.                     |
+| `tenant_id`        | ID of the tenant (organization) associated with the service.             |
+| `name`             | Name of the service.                                                     |
+| `description`      | Description of the service provided.                                     |
+| `is_virtual`       | Boolean flag indicating whether the service is virtual.                  |
+| `service_group_id` | ID of the service group to which this service belongs.                   |
+| `is_default`       | Boolean flag indicating whether the service is the default for its type. |
+
+Here is how to add a service
+
+```sql
+INSERT INTO proptech.activity_type_service
+(external_id, activity_type_id, service_id, is_mandatory, estimated_duration, qty)
+VALUES(uuid(), 4, '341824f0-98c1-11ee-849b-42010a9a000f', 1, 180, 1);
+```
+
+Here is how to search activities for a specific property using the address field
+
+```sql
+select a.* from proptech.activity a
+join proptech.engagement e  on e.id = a.engagement_id
+join proptech.property p on p.id = e.property_id
+where p.formatted_address like '%Costar%'
+```
+
+**2. Evidence Config Table**
 
 This table stores information and documentation related to a install workflow, such as various forms, images and permits needed during a install
 
@@ -49,52 +205,24 @@ ORDER BY ec.id, ec.name;
 
 ```
 
-### Property Table
+Here's a breakdown of the fields
 
-The property tables contains all the properties related to a specific organization. Below is a sql statement to retrieve all properties for a specific company:
-
-```sql
-SELECT p.formatted_address, o.name
-FROM proptech.property p, organization.organization o
-WHERE o.name = "CRG Direct";
-```
-
-## PropTech \- Database Overview
-
-Primarily used for storing any data related to Zervio ECO
-
-This database is mostly updated with insert statements such as the below
-
-**Activities Tables** \- Activities are different types of work done during a project lifecycle, below is an example of inserting a new activity type
-
-```sql
-INSERT INTO proptech.activity_type
-( external_id, tenant_id, saas_operator_id, is_default, name, description, tag, allow_job, allow_opportunity)
-VALUES( uuid(), 'e7cbb9db-b086-11ee-ba36-42010a400002', 'e7cbb9db-b086-11ee-ba36-42010a400002', 1, 'ASHP Site Survey', 'ASHP Site Survey', 'ASHP_SITE_SURVEY', 1, 1);
-```
-
-Each activity type added also needs to be added to the **activity_config** table, id from activity_type is used to link them using **activity_type_id**
-
-```sql
-INSERT INTO proptech.activity_type_config
-(external_id, activity_type_id, job_type_id, project_id)
-VALUES(uuid(), 9, 17, NULL);
-```
-
-A service is also needed , this allows installers, and other crew to be assigned to an activity
-
-```sql
-INSERT INTO proptech.activity_type_service
-(external_id, activity_type_id, service_id, is_mandatory, estimated_duration, qty)
-VALUES(uuid(), 4, '341824f0-98c1-11ee-849b-42010a9a000f', 1, 180, 1);
-
-```
-
-Here is how to search activities for a specific property using the address field
-
-```sql
-select a.* from proptech.activity a
-join proptech.engagement e  on e.id = a.engagement_id
-join proptech.property p on p.id = e.property_id
-where p.formatted_address like '%Costar%'
-```
+| **Field Name**         | **Explanation**                                                             |
+| ---------------------- | --------------------------------------------------------------------------- |
+| `id`                   | Unique identifier for the evidence configuration.                           |
+| `external_id`          | Unique identifier for the evidence configuration linked externally.         |
+| `evidence_category_id` | ID linking to the category of evidence (e.g., forms, images).               |
+| `name`                 | Name of the evidence configuration.                                         |
+| `evidence_type`        | Type of evidence (e.g., form, image, legal document).                       |
+| `source`               | Source of the evidence (e.g., external file, URL).                          |
+| `form_id`              | ID of the form associated with the evidence configuration (if applicable).  |
+| `integration_id`       | ID for integration with external systems (if applicable).                   |
+| `template_id`          | ID of the template associated with the evidence configuration.              |
+| `append_product_specs` | Boolean flag indicating whether product specs should be appended.           |
+| `tag`                  | Tag associated with the evidence for categorization or filtering.           |
+| `tenant_id`            | ID of the tenant (organization) associated with the evidence configuration. |
+| `saas_operator_id`     | ID of the SaaS operator managing the evidence configuration.                |
+| `is_default`           | Boolean flag indicating if this is the default evidence configuration.      |
+| `share_to_job`         | Boolean flag indicating whether the evidence can be shared to a job.        |
+| `allow_versioning`     | Boolean flag indicating if versioning is allowed for this evidence.         |
+| `is_collaborative`     | Boolean flag indicating if the evidence can be collaboratively edited.      |

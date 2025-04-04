@@ -181,7 +181,7 @@ INSERT INTO proptech.activity_type_service
 VALUES(uuid(), 4, '341824f0-98c1-11ee-849b-42010a9a000f', 1, 180, 1);
 ```
 
-Here is how to find all activities for a specific property using
+Here is how to find all activities for a specific property
 
 ```sql
 select a.* from proptech.activity a

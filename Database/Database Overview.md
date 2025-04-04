@@ -28,9 +28,9 @@ The tables within this database contain company-specific details, such as organi
 
 **1. Organization Table**
 
-This table stores the core information about each company using Zervio ECO, identified by their `external_id` and other important attributes such as the name and SaaS_Operator_ID.
+This table stores the core information about each company using Zervio ECO, identified by their `external_id` and other important attributes such as the `name` and `saas_operator_id`.
 
-When referenced in other tables or databases the `externtal_id` is used a foreign key often named `tentant_id`
+When referenced in other tables or databases the `externtal_id` is used as a foreign key often named `tentant_id`
 
 | **Field Name**                | **Explanation**                                                        |
 | ----------------------------- | ---------------------------------------------------------------------- |
@@ -53,7 +53,7 @@ When referenced in other tables or databases the `externtal_id` is used a foreig
 
 **2. Property Table**
 
-The property tables contains all the properties related to a specific organization these are entered when a user adds a lead or oppurtunity. Below is a sql statement to retrieve all properties for a specific company:
+The property tables contains all the properties related to a specific organization. These are entered when a user adds a lead or oppurtunity. Below is a sql statement to retrieve all properties for a specific company:
 
 ```sql
 SELECT p.formatted_address, o.name
@@ -95,11 +95,11 @@ Primarily used for storing any data related to Zervio ECO. Below are explanation
 
 ### Activities
 
-Activities are added to differnent types of jobs needed to complete a job, four main tables are used to add an activity
+Activities are actions added to jobs which are needed to complete the specific job. Four main tables are used to add an activity
 
 **1. Activity Type Table**
 
-Activities are different types of work that can / should done during a project lifecycle these are stored in the activity_type table, below is an example of inserting a new activity type
+Activities are different types of work that can / should be done during a project lifecycle, these are stored in the `activity_typ`e table, below is an example of inserting a new activity type
 
 ```sql
 INSERT INTO proptech.activity_type
@@ -134,11 +134,13 @@ VALUES( uuid(), 'e7cbb9db-b086-11ee-ba36-42010a400002', 'e7cbb9db-b086-11ee-ba36
 | `expected_date`          | Expected date for the activity to occur.                            |
 | `activity_type_id`       | ID linking to the type of activity.                                 |
 
-Each activity type added also needs to be added to the **activity_config** table, the id from activity_type is used to link them using **activity_type_id**
+Each activity type added also needs to be added to the **activity_config** table, the id from `activity_type` is used to link them using **activity_type_id**
 
 **2. Activity Config Table**
 
-The `activity_type_config` table configures an activity type, allowing services to be added to it. Services are different services or jobs that are done during an activity. Below is an example of inserting a new activity type configuration:
+The `activity_type_config` table configures an activity type, allowing services to be added to it.
+
+Services are different services rendered during an activity. Below is an example of inserting a new activity type configuration:
 
 ```sql
 INSERT INTO proptech.activity_type_config
@@ -154,7 +156,7 @@ VALUES(uuid(), 9, 17, NULL);
 | `job_type_id`      | ID of the job type associated with the activity type.                    |
 | `project_id`       | ID of the project associated with the activity type (if applicable).     |
 
-A service is also needed , this allows installers, and other crew to be assigned to an activity
+A service is also needed, this allows installers and other crew to be assigned to an activity
 
 **3. Service Table**
 
@@ -179,7 +181,7 @@ INSERT INTO proptech.activity_type_service
 VALUES(uuid(), 4, '341824f0-98c1-11ee-849b-42010a9a000f', 1, 180, 1);
 ```
 
-Here is how to search activities for a specific property using the address field
+Here is how to find all activities for a specific property using
 
 ```sql
 select a.* from proptech.activity a
@@ -192,7 +194,7 @@ where p.formatted_address like '%Costar%'
 
 This table stores information and documentation related to a install workflow, such as various forms, images and permits needed during a install
 
-Below is a SQL query to retrieve evidence configuration data for a specific company, this evidence consists of different types such as `Forms, Images` and `Legal Documents.` Below is a SQL statement to retrieve evidence config data of a specific company:
+Below is a SQL query to retrieve the evidence configuration data for a specific company, this evidence consists of different types such as `Forms, Images` and `Legal Documents` :
 
 ```sql
 SELECT ec.id, ec.name, c.id, c.name, o.name AS category_org, oc.name AS config_org
